@@ -35,3 +35,5 @@ jobs:
         gradle-version: 7.6.3
         gradle-home-cache-cleanup: true
         cache-read-only: false
+    - name: Execute build with Gradle wrapper
+      run: ./gradlew build
