@@ -152,7 +152,7 @@ public class Main {
 
 		//上端の石ブロック
 		for(int x=0;x<width;x++){
-			Blocks[width * (length) * (-yzmin[x]) + x] = 1;
+			Blocks[width * (length) * (-yzmin[x]) + x] = 32;
 		}
 
 		//それ以外
@@ -164,48 +164,133 @@ public class Main {
 			}
 		}
 
+		
+		final String[] palettes = {"minecraft:air",
+		        "minecraft:cobweb",
+		        "minecraft:black_wool",
+		        "minecraft:prismarine_bricks",
+		        "minecraft:emerald_block",
+		        "minecraft:gold_block",
+		        "minecraft:blue_wool",
+		        "minecraft:brown_wool",
+		        "minecraft:clay",
+		        "minecraft:cyan_wool",
+		        "minecraft:dirt",
+		        "minecraft:slime_block",
+		        "minecraft:green_wool",
+		        "minecraft:gray_wool",
+		        "minecraft:ice",
+		        "minecraft:iron_block",
+		        "minecraft:lapis_block",
+		        "minecraft:redstone_block",
+		        "minecraft:oak_leaves[persistent=true]",
+		        "minecraft:light_blue_wool",
+		        "minecraft:light_gray_wool",
+		        "minecraft:lime_wool",
+		        "minecraft:magenta_wool",
+		        "minecraft:netherrack",
+		        "minecraft:oak_planks",
+		        "minecraft:orange_wool",
+		        "minecraft:pink_wool",
+		        "minecraft:spruce_planks",
+		        "minecraft:purple_wool",
+		        "minecraft:quartz_block",
+		        "minecraft:red_wool",
+		        "minecraft:sandstone",
+		        "minecraft:stone",
+		        "minecraft:white_wool",
+		        "minecraft:yellow_wool",
+		        "minecraft:white_terracotta",
+		        "minecraft:orange_terracotta",
+		        "minecraft:magenta_terracotta",
+		        "minecraft:light_blue_terracotta",
+		        "minecraft:yellow_terracotta",
+		        "minecraft:lime_terracotta",
+		        "minecraft:pink_terracotta",
+		        "minecraft:gray_terracotta",
+		        "minecraft:light_gray_terracotta",
+		        "minecraft:cyan_terracotta",
+		        "minecraft:purple_terracotta",
+		        "minecraft:blue_terracotta",
+		        "minecraft:brown_terracotta",
+		        "minecraft:green_terracotta",
+		        "minecraft:red_terracotta",
+		        "minecraft:black_terracotta",
+		        "minecraft:crimson_nylium",
+		        "minecraft:crimson_planks",
+		        "minecraft:crimson_hyphae",
+		        "minecraft:warped_nylium",
+		        "minecraft:warped_planks",
+		        "minecraft:warped_hyphae",
+		        "minecraft:warped_wart_block",
+		        "minecraft:deepslate",
+		        "minecraft:raw_iron_block",
+		        "minecraft:glow_lichen"
+				//,"minecraft:water"
+		        };
+		
+		
+		
+		int count = 0;
+		for(int i = 0; i < palettes.length; i++) {
+			count += palettes[i].length();
+		}
 
+			
 		//最終、ファイル書き出し
 		GZIPOutputStream gz = null;
 
 		try{
-			gz = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fileName +".schematic")));
+			gz = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fileName +".schem")));
 
 			gz.write(new byte[]{0x0A,0x00,0x09});//NBTTagCompound,9文字
 			gz.write(new String("Schematic").getBytes());
+				gz.write(new byte[]{0x03,0x00,0x07});//int,7文字
+				gz.write(new String("Version").getBytes());
+				gz.write(new byte[]{0x00,0x00,0x00,0x02});
 
-			gz.write(new byte[]{0x02,0x00,0x05});//Short,5文字
-			gz.write(new String("Width").getBytes());
-			gz.write(ByteBuffer.allocate(2).putShort((short)width).array());
-			gz.write(new byte[]{0x02,0x00,0x06});//Short,6文字
-			gz.write(new String("Length").getBytes());
-			gz.write(ByteBuffer.allocate(2).putShort((short)length).array());
-			gz.write(new byte[]{0x02,0x00,0x06});//Short,6文字
-			gz.write(new String("Height").getBytes());
-			gz.write(ByteBuffer.allocate(2).putShort((short)height).array());
+				gz.write(new byte[]{0x03,0x00,0x0b});//int,11文字
+				gz.write(new String("DataVersion").getBytes());
+				gz.write(new byte[]{0x00,0x00,0x0D,0x00});
 
-			gz.write(new byte[]{0x08,0x00,0x09});//String,9文字
-			gz.write(new String("Materials").getBytes());
-			gz.write(new byte[]{0x00,0x05});//5文字
-			gz.write(new String("Alpha").getBytes());
-			gz.write(new byte[]{0x09,0x00,0x08});//List,8文字
-			gz.write(new String("Entities").getBytes());
-			gz.write(new byte[]{0x00,0x00,0x00,0x00,0x00});//byteとint 0-0000
-			gz.write(new byte[]{0x09,0x00,0x0c});//List,12文字
-			gz.write(new String("TileEntities").getBytes());
-			gz.write(new byte[]{0x00,0x00,0x00,0x00,0x00});//byteとint 0-0000
+				gz.write(new byte[]{0x02,0x00,0x05});//Short,5文字
+				gz.write(new String("Width").getBytes());
+				gz.write(ByteBuffer.allocate(2).putShort((short)width).array());
 
-			gz.write(new byte[]{0x07,0x00,0x06});//Byte配列,6文字
-			gz.write(new String("Blocks").getBytes());
-			gz.write(ByteBuffer.allocate(4).putInt(Blocks.length).array());//Byte配列の長さ
-			gz.write(Blocks);
+				gz.write(new byte[]{0x02,0x00,0x06});//Short,6文字
+				gz.write(new String("Height").getBytes());
+				gz.write(ByteBuffer.allocate(2).putShort((short)height).array());
 
-			gz.write(new byte[]{0x07,0x00,0x04});//Byte配列,4文字
-			gz.write(new String("Data").getBytes());
-			gz.write(ByteBuffer.allocate(4).putInt(Data.length).array());//Byte配列の長さ
-			gz.write(Data);
-			gz.write(0x00);//End
+				gz.write(new byte[]{0x02,0x00,0x06});//Short,6文字
+				gz.write(new String("Length").getBytes());
+				gz.write(ByteBuffer.allocate(2).putShort((short)length).array());
 
+				
+				
+				gz.write(new byte[]{0x03,0x00,0x0A});//int,10文字
+				gz.write(new String("PaletteMax").getBytes());
+				gz.write(ByteBuffer.allocate(4).putInt(palettes.length).array());
+				
+				gz.write(new byte[]{0x0A,0x00,0x07});//NBTTagCompound,7文字
+				gz.write(new String("Palette").getBytes());
+					for(int i = 0; i < palettes.length; i++) {
+			               String palette = palettes[i];
+			               byte len1 = (byte) palette.length();
+			               byte len2 = (byte) (palette.length() >> 8);
+			                gz.write(new byte[]{0x03, len2, len1});//int
+		                	gz.write(palette.getBytes());			  
+		                	gz.write(ByteBuffer.allocate(4).putInt(i).array());
+						}
+					
+					gz.write(0x00);//End
+			    
+					
+				gz.write(new byte[]{0x07,0x00,0x09});//TAG_Byte_Array,9文字
+				gz.write(new String("BlockData").getBytes());
+				gz.write(ByteBuffer.allocate(4).putInt(Blocks.length).array());//Byte配列の長さ
+				gz.write(Blocks);
+			    
+			  gz.write(0x00);//End
 			gz.finish();
 
 		}catch(Exception e){
