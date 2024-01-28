@@ -231,10 +231,6 @@ public class Main {
 		
 		
 		
-		int count = 0;
-		for(int i = 0; i < palettes.length; i++) {
-			count += palettes[i].length();
-		}
 
 			
 		//最終、ファイル書き出し
